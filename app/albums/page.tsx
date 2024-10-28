@@ -42,11 +42,18 @@ const ADD_ALBUM = gql`
   }
 `;
 
+const DELETE_ALBUMS = gql`
+  mutation DeleteAlbums($id: ID!) {
+    deleteAlbum(id: $id)
+  }
+`;
+
 export default function AlbumsPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [newAlbum, setNewAlbum] = useState({ title: "", userId: "" });
+  const [selectedAlbums, setSelectedAlbums] = useState<string[]>([]);
 
   const { loading, error, data, refetch } = useQuery(GET_ALBUMS, {
     variables: {
@@ -67,8 +74,18 @@ export default function AlbumsPage() {
         title: "Success",
         description: "New album added successfully!",
       });
-      setNewAlbum({ title: "", userId: "" }); // Reset form
+      setNewAlbum({ title: "", userId: "" });
     },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const [deleteAlbums, { loading: deleteLoading }] = useMutation(DELETE_ALBUMS, {
     onError: (error) => {
       toast({
         title: "Error",
@@ -87,6 +104,34 @@ export default function AlbumsPage() {
     addAlbum({ variables: { input: newAlbum } });
   };
 
+
+  const handleBulkDelete = async () => {
+    if (selectedAlbums.length === 0) {
+      toast({
+        title: "Warning",
+        description: "No albums selected for deletion.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      // Loop through each selected album ID and call the deleteAlbum mutation
+      for (const id of selectedAlbums) {
+        await deleteAlbums({ variables: { id } });
+      }
+      toast({
+        title: "Success",
+        description: `${selectedAlbums.length} album(s) deleted successfully!`,
+      });
+      setSelectedAlbums([]);
+      refetch();
+    } catch (error) {
+      console.error(error)
+    }
+  };
+
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
@@ -95,10 +140,7 @@ export default function AlbumsPage() {
       id: "select",
       header: ({ table }) => (
         <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
+          checked={table.getIsAllPageRowsSelected()}
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
         />
@@ -121,11 +163,12 @@ export default function AlbumsPage() {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Email
+            Title
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
-      }, cell: ({ row }) => (
+      },
+      cell: ({ row }) => (
         <button className='cursor-pointer h-[30px]' onClick={() => router.push(`/albums/${row.original.id}`)}>
           {row.getValue('title')}
         </button>
@@ -140,9 +183,6 @@ export default function AlbumsPage() {
   return (
     <div className='p-4'>
       <div className="flex justify-between mb-4">
-        <Button>
-          Delete Selected
-        </Button>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
             <Button>Add new album</Button>
@@ -179,10 +219,14 @@ export default function AlbumsPage() {
             </form>
           </DialogContent>
         </Dialog>
+        <Button variant={'destructive'} onClick={handleBulkDelete} disabled={deleteLoading || selectedAlbums.length === 0}>
+          {deleteLoading ? "Deleting..." : "Delete Selected"}
+        </Button>
       </div>
       <DataTable
         columns={columns}
         data={data.albums.data}
+        onRowSelectionChange={setSelectedAlbums}
       />
     </div>
   );

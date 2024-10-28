@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 import {
     ColumnDef,
@@ -9,7 +9,8 @@ import {
     getCoreRowModel,
     useReactTable,
     getFilteredRowModel,
-    ColumnFiltersState
+    ColumnFiltersState,
+    RowSelectionState,
 } from "@tanstack/react-table"
 
 import {
@@ -22,20 +23,19 @@ import {
 } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
 
-
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
+    onRowSelectionChange: (selectedIds: string[]) => void
 }
 
 export function DataTable<TData, TValue>({
     columns,
     data,
+    onRowSelectionChange,
 }: DataTableProps<TData, TValue>) {
-    const [rowSelection, setRowSelection] = useState({})
-    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
-        []
-    )
+    const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
     const [sorting, setSorting] = useState<SortingState>([])
 
     const table = useReactTable({
@@ -54,11 +54,16 @@ export function DataTable<TData, TValue>({
         },
     })
 
+    useEffect(() => {
+        const selectedIds = Object.keys(rowSelection).map(index => (data[parseInt(index)] as any).id);
+        onRowSelectionChange(selectedIds);
+    }, [rowSelection, data, onRowSelectionChange]);
+
     return (
         <div>
             <div className="flex items-center py-4">
                 <Input
-                    placeholder="Search albums..."
+                    placeholder="Search albums by title..."
                     value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
                     onChange={(event) =>
                         table.getColumn("title")?.setFilterValue(event.target.value)
