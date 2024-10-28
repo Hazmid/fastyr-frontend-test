@@ -116,7 +116,7 @@ export default function AlbumsPage() {
       accessorKey: "title",
       header: "Title",
       cell: ({ row }) => (
-        <button className='cursor-pointer' onClick={() => router.push(`/albums/${row.original.id}`)}>
+        <button className='cursor-pointer h-[30px]' onClick={() => router.push(`/albums/${row.original.id}`)}>
           {row.getValue('title')}
         </button>
       ),
