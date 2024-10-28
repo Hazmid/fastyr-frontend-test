@@ -6,6 +6,7 @@ import Link from 'next/link'
 // import { Button } from "@/components/ui/button"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/app/components/app-sidebar"
+import { Toaster } from "@/components/ui/toaster"
 
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
@@ -32,6 +33,7 @@ export default function RootLayout({
           <SidebarProvider>
             <AppSidebar />
             <main>
+              <Toaster />
               <SidebarTrigger />
               {children}
             </main>

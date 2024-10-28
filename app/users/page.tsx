@@ -1,8 +1,13 @@
 "use client"
+import { useState } from "react";
 import Link from "next/link";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery, useMutation } from "@apollo/client";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { useToast } from "@/hooks/use-toast"
 
 const GET_USERS = gql`
   query GetUsers {
@@ -10,6 +15,7 @@ const GET_USERS = gql`
       data {
         id
         name
+        username
         email
         phone
       }
@@ -17,42 +23,140 @@ const GET_USERS = gql`
   }
 `;
 
-const users = () => {
+const ADD_USER = gql`
+  mutation AddUser($input: CreateUserInput!) {
+    createUser(input: $input) {
+      id
+      name
+      username
+      email
+      phone
+    }
+  }
+`;
 
-    const { data, loading, error } = useQuery(GET_USERS);
+const Users = () => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [newUser, setNewUser] = useState({ name: "", username: "", email: "", phone: "" });
+    const { toast } = useToast()
+
+    const { data, loading, error, refetch } = useQuery(GET_USERS);
+
+    const [addUser, { loading: addLoading }] = useMutation(ADD_USER, {
+        onCompleted: () => {
+            setIsOpen(false);
+            toast({
+                title: "Success",
+                description: "New user added successfully!",
+            });
+            refetch();
+            setNewUser({ name: "", username: "", email: "", phone: "" }); // Reset form
+        },
+        onError: (error) => {
+            toast({
+                title: "Error",
+                description: error.message,
+                variant: "destructive",
+            });
+        },
+    });
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setNewUser({ ...newUser, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        addUser({ variables: { input: newUser } });
+    };
 
     if (loading) {
-        return <div>loading.....</div>;
+        return <div className="flex justify-center items-center h-screen">Loading...</div>;
     }
-    if (error) return <p>Error: {error.message}</p>;
-    if (data) {
-        console.log("data", data);
-    }
+    if (error) return <p className="text-red-500">Error: {error.message}</p>;
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 justify-between items-center">
-            {data.users.data.map((user: any) => (
-                <Card key={user.id}>
-                    <CardHeader>
-                        <CardTitle>{user.name}</CardTitle>
-                        <CardDescription>{user.email}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <p>Phone: {user.phone}</p>
-                    </CardContent>
-                    <CardFooter>
-                        <Button asChild variant="outline">
-                            <Link href={`/users/${user.id}`}>
-                                View Details
-                            </Link>
+        <div className="p-4">
+            <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                <DialogTrigger asChild>
+                    <Button className="mb-4">Add new user</Button>
+                </DialogTrigger>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Add New User</DialogTitle>
+                    </DialogHeader>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div>
+                            <Label htmlFor="name">Name</Label>
+                            <Input
+                                id="name"
+                                name="name"
+                                value={newUser.name}
+                                onChange={handleInputChange}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <Label htmlFor="username">Username</Label>
+                            <Input
+                                id="username"
+                                name="username"
+                                value={newUser.username}
+                                onChange={handleInputChange}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <Label htmlFor="email">Email</Label>
+                            <Input
+                                id="email"
+                                name="email"
+                                type="email"
+                                value={newUser.email}
+                                onChange={handleInputChange}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <Label htmlFor="phone">Phone</Label>
+                            <Input
+                                id="phone"
+                                name="phone"
+                                value={newUser.phone}
+                                onChange={handleInputChange}
+                                required
+                            />
+                        </div>
+                        <Button type="submit" disabled={addLoading}>
+                            {addLoading ? "Adding..." : "Add User"}
                         </Button>
-                    </CardFooter>
-                </Card>
-            ))}
-        </div>)
+                    </form>
+                </DialogContent>
+            </Dialog>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {data.users.data.map((user: any) => (
+                    <Card key={user.id}>
+                        <CardHeader>
+                            <CardTitle>{user.name}</CardTitle>
+                            <CardDescription>{user.username}</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <p>Email: {user.email}</p>
+                            <p>Phone: {user.phone}</p>
+                        </CardContent>
+                        <CardFooter>
+                            <Button asChild variant="outline">
+                                <Link href={`/users/${user.id}`}>
+                                    View Details
+                                </Link>
+                            </Button>
+                        </CardFooter>
+                    </Card>
+                ))}
+            </div>
+        </div>
+    )
 }
 
-export default users
-
-
-
+export default Users;
