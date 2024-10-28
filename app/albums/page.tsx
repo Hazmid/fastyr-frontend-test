@@ -11,6 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { useRouter } from 'next/navigation'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { useToast } from "@/hooks/use-toast"
+import { ArrowUpDown } from "lucide-react"
 
 const GET_ALBUMS = gql`
   query GetAlbums($options: PageQueryOptions) {
@@ -114,8 +115,17 @@ export default function AlbumsPage() {
     },
     {
       accessorKey: "title",
-      header: "Title",
-      cell: ({ row }) => (
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Email
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        )
+      }, cell: ({ row }) => (
         <button className='cursor-pointer h-[30px]' onClick={() => router.push(`/albums/${row.original.id}`)}>
           {row.getValue('title')}
         </button>

@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ApolloWrapper } from "@/lib/apollo-wrapper";
-import Link from 'next/link'
 // import { Button } from "@/components/ui/button"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import { AppSidebar } from "@/app/components/app-sidebar"
+import { AppSidebar } from "@/components/app-sidebar"
 import { Toaster } from "@/components/ui/toaster"
 
 const geistMono = localFont({
