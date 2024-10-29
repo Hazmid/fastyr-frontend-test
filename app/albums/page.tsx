@@ -12,7 +12,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { useToast } from "@/hooks/use-toast"
-import { ArrowUpDown, File } from "lucide-react"
+import { ArrowUpDown, File, Loader } from "lucide-react"
 
 import { useQuery, useMutation } from '@apollo/client';
 import { Album } from '@/lib/types';
@@ -151,7 +151,13 @@ export default function AlbumsPage() {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen w-full">
+        <Loader className="animate-spin" />
+      </div>
+    );
+  }
   if (error) return <p>Error: {error.message}</p>;
 
   const columns: ColumnDef<any>[] = [

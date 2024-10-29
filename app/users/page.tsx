@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { useToast } from "@/hooks/use-toast"
+import { Loader } from "lucide-react"
 
 import { useQuery, useMutation } from "@apollo/client";
 import { User } from "@/lib/types";
@@ -29,7 +30,7 @@ const Users = () => {
                 description: "New user added successfully!",
             });
             refetch();
-            setNewUser({ name: "", username: "", email: "", phone: "" }); // Reset form
+            setNewUser({ name: "", username: "", email: "", phone: "" });
         },
         onError: (error) => {
             toast({
@@ -50,7 +51,11 @@ const Users = () => {
     };
 
     if (loading) {
-        return <div className="flex justify-center items-center h-screen">Loading...</div>;
+         return (
+          <div className="flex justify-center items-center h-screen w-full">
+            <Loader className="animate-spin" />
+          </div>
+        );
     }
     if (error) return <p className="text-red-500">Error: {error.message}</p>;
 

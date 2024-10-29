@@ -31,7 +31,7 @@ export default function RootLayout({
         <ApolloWrapper>
           <SidebarProvider>
             <AppSidebar />
-            <main>
+            <main className="w-full">
               <Toaster />
               <SidebarTrigger />
               {children}

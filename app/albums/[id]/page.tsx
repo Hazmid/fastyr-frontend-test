@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { useToast } from "@/hooks/use-toast"
+import { Loader } from "lucide-react"
 
 import { useQuery, useMutation } from "@apollo/client";
 import { Photo } from "@/lib/types";
@@ -66,7 +67,13 @@ const AlbumDetails = ({ params }: { params: Promise<{ id: string }> }) => {
         },
     });
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) {
+        return (
+          <div className="flex justify-center items-center h-screen w-full">
+            <Loader className="animate-spin" />
+          </div>
+        );
+    }
     if (error) return <p>Error: {error.message}</p>;
 
     const { album } = data;
