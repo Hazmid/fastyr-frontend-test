@@ -1,7 +1,8 @@
 "use client"
+
 import { useState } from "react";
 import Link from "next/link";
-import { gql, useQuery, useMutation } from "@apollo/client";
+
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,35 +10,13 @@ import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { useToast } from "@/hooks/use-toast"
 
-const GET_USERS = gql`
-  query GetUsers {
-    users {
-      data {
-        id
-        name
-        username
-        email
-        phone
-      }
-    }
-  }
-`;
-
-const ADD_USER = gql`
-  mutation AddUser($input: CreateUserInput!) {
-    createUser(input: $input) {
-      id
-      name
-      username
-      email
-      phone
-    }
-  }
-`;
+import { useQuery, useMutation } from "@apollo/client";
+import { User } from "@/lib/types";
+import { ADD_USER, GET_USERS } from "@/lib/gqlOperations";
 
 const Users = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const [newUser, setNewUser] = useState({ name: "", username: "", email: "", phone: "" });
+    const [newUser, setNewUser] = useState<User>({ name: "", username: "", email: "", phone: "" })
     const { toast } = useToast()
 
     const { data, loading, error, refetch } = useQuery(GET_USERS);
@@ -135,7 +114,7 @@ const Users = () => {
             </Dialog>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {data.users.data.map((user: any) => (
+                {data.users.data.map((user: User) => (
                     <Card key={user.id}>
                         <CardHeader>
                             <CardTitle>{user.name}</CardTitle>

@@ -1,58 +1,27 @@
 "use client"
 
 import { useState } from 'react';
-import { useQuery, gql, useMutation } from '@apollo/client';
+import { useRouter } from 'next/navigation'
+
 import { DataTable } from "./data-table"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ColumnDef } from "@tanstack/react-table"
 import { Checkbox } from "@/components/ui/checkbox"
-import { useRouter } from 'next/navigation'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { useToast } from "@/hooks/use-toast"
 import { ArrowUpDown } from "lucide-react"
 
-const GET_ALBUMS = gql`
-  query GetAlbums($options: PageQueryOptions) {
-    albums(options: $options) {
-      data {
-        id
-        title
-        user {
-          name
-        }
-      }
-      meta {
-        totalCount
-      }
-    }
-  }
-`;
-
-const ADD_ALBUM = gql`
-  mutation AddAlbum($input: CreateAlbumInput!) {
-    createAlbum(input: $input) {
-      id
-      title
-      user {
-        name
-      }
-    }
-  }
-`;
-
-const DELETE_ALBUMS = gql`
-  mutation DeleteAlbums($id: ID!) {
-    deleteAlbum(id: $id)
-  }
-`;
+import { useQuery, useMutation } from '@apollo/client';
+import { Album } from '@/lib/types';
+import { ADD_ALBUM, DELETE_ALBUMS, GET_ALBUMS } from '@/lib/gqlOperations';
 
 export default function AlbumsPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
-  const [newAlbum, setNewAlbum] = useState({ title: "", userId: "" });
+  const [newAlbum, setNewAlbum] = useState<Album>({ title: "", userId: "" });
   const [selectedAlbums, setSelectedAlbums] = useState<string[]>([]);
 
   const { loading, error, data, refetch } = useQuery(GET_ALBUMS, {

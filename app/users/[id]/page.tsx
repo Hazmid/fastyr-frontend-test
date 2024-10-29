@@ -1,60 +1,28 @@
 "use client";
 
-import { useState } from "react";
-import { gql, useQuery, useMutation } from "@apollo/client";
-import { use } from "react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState, use } from "react";
+import Link from "next/link";
+import { useRouter } from 'next/navigation';
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { useToast } from "@/hooks/use-toast"
-import Link from "next/link";
-import { useRouter } from 'next/navigation';
 
-const GET_USER_BY_ID = gql`
-  query GetUserById($id: ID!) {
-    user(id: $id) {
-      id
-      name
-      email
-      phone
-      address {
-        street
-        city
-        zipcode
-      }
-      company {
-        name
-      }
-    }
-  }
-`;
-
-const UPDATE_USER = gql`
-  mutation UpdateUser($id: ID!, $input: UpdateUserInput!) {
-    updateUser(id: $id, input: $input) {
-      id
-      name
-      email
-      phone
-    }
-  }
-`;
-
-const DELETE_USER = gql`
-  mutation DeleteUser($id: ID!) {
-    deleteUser(id: $id)
-  }
-`;
+import { useQuery, useMutation } from "@apollo/client";
+import { User } from "@/lib/types";
+import { DELETE_USER, GET_USER_BY_ID, UPDATE_USER } from "@/lib/gqlOperations";
 
 const UserDetails = ({ params }: { params: Promise<{ id: string }> }) => {
     const { id } = use(params);
     const router = useRouter();
     const { toast } = useToast();
     const [isEditOpen, setIsEditOpen] = useState(false);
-    const [editedUser, setEditedUser] = useState({
+    const [editedUser, setEditedUser] = useState<User>({
         name: "",
+        username: "",
         email: "",
         phone: ""
     });
@@ -130,6 +98,7 @@ const UserDetails = ({ params }: { params: Promise<{ id: string }> }) => {
                 <CardContent>
                     <h1 className="text-2xl font-bold mb-2">Name: {data.user.name}</h1>
                     <p className="mb-1">Email: {data.user.email}</p>
+                    <p className="mb-1">Username: {data.user.username}</p>
                     <p className="mb-1">Phone: {data.user.phone}</p>
                     <p className="mb-1">Address: {data.user.address.street}, {data.user.address.city}, {data.user.address.zipcode}</p>
                     <p className="mb-4">Company: {data.user.company.name}</p>
@@ -138,6 +107,7 @@ const UserDetails = ({ params }: { params: Promise<{ id: string }> }) => {
                             <DialogTrigger asChild>
                                 <Button onClick={() => setEditedUser({
                                     name: data.user.name,
+                                    username: data.user.username,
                                     email: data.user.email,
                                     phone: data.user.phone
                                 })}>
@@ -166,6 +136,16 @@ const UserDetails = ({ params }: { params: Promise<{ id: string }> }) => {
                                             name="email"
                                             type="email"
                                             value={editedUser.email}
+                                            onChange={handleInputChange}
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label htmlFor="username">Username</Label>
+                                        <Input
+                                            id="username"
+                                            name="username"
+                                            value={editedUser.username}
                                             onChange={handleInputChange}
                                             required
                                         />

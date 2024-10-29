@@ -1,53 +1,20 @@
 "use client";
 
-import { useState } from "react";
-import { gql, useQuery, useMutation } from "@apollo/client";
-import { use } from "react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState, use } from "react";
+import Link from "next/link";
+import { useRouter } from 'next/navigation';
+import Image from "next/image";
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { useToast } from "@/hooks/use-toast"
-import Link from "next/link";
-import { useRouter } from 'next/navigation';
-import Image from "next/image";
 
-const GET_ALBUM_BY_ID = gql`
-  query GetAlbumById($id: ID!) {
-    album(id: $id) {
-      id
-      title
-      user {
-        id
-        name
-      }
-      photos {
-        data {
-          id
-          title
-          url
-          thumbnailUrl
-        }
-      }
-    }
-  }
-`;
-
-const UPDATE_ALBUM = gql`
-  mutation UpdateAlbum($id: ID!, $input: UpdateAlbumInput!) {
-    updateAlbum(id: $id, input: $input) {
-      id
-      title
-    }
-  }
-`;
-
-const DELETE_ALBUM = gql`
-  mutation DeleteAlbum($id: ID!) {
-    deleteAlbum(id: $id)
-  }
-`;
+import { useQuery, useMutation } from "@apollo/client";
+import { Photo } from "@/lib/types";
+import { DELETE_ALBUM, GET_ALBUM_BY_ID, UPDATE_ALBUM } from "@/lib/gqlOperations";
 
 const AlbumDetails = ({ params }: { params: Promise<{ id: string }> }) => {
     const { id } = use(params);
@@ -62,7 +29,7 @@ const AlbumDetails = ({ params }: { params: Promise<{ id: string }> }) => {
         variables: { id },
     });
 
-    const [imgError, setImgError] = useState<{[key: string]: boolean}>({});
+    const [imgError, setImgError] = useState<{ [key: string]: boolean }>({});
 
     const [updateAlbum] = useMutation(UPDATE_ALBUM, {
         onCompleted: () => {
@@ -169,7 +136,7 @@ const AlbumDetails = ({ params }: { params: Promise<{ id: string }> }) => {
                     </div>
                     <h2 className="text-xl font-semibold mb-4">Photos</h2>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                        {album.photos.data.map((photo: any) => (
+                        {album.photos.data.map((photo: Photo) => (
                             <div key={photo.id} className="relative group">
                                 <Image
                                     src={imgError[photo.id] ? '/placeholder.png' : photo.thumbnailUrl}
