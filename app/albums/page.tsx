@@ -247,7 +247,7 @@ export default function AlbumsPage() {
               </form>
             </DialogContent>
           </Dialog>
-          <div className=' mt-4 '>
+          <div className='mt-8'>
             <p className='text-sm text-gray-500'>Or import albums from a CSV/XLSX file</p>
             <div className='flex gap-2 items-center justify-center'>
               <File />

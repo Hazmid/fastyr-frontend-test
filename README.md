@@ -1,36 +1,104 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Fastyr Frontend Test
 
-## Getting Started
+This project is a frontend application built with Next.js, demonstrating integration with a GraphQL API and utilizing modern UI components. It serves as a submission for the Fastyr frontend developer position assessment.
 
-First, run the development server:
+## 🚀 Live Demo
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+[View the live demo]()
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠 Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- [Next.js](https://nextjs.org/) with App Router
+- [React](https://reactjs.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Apollo Client](https://www.apollographql.com/docs/react/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [shadcn/ui](https://ui.shadcn.com/)
+- [TanStack Table](https://tanstack.com/table/v8)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🌟 Features
 
-## Learn More
+- Responsive design with a sidebar and header component
+- User management (/users and /users/[id] routes)
+- Album management (/albums and /albums/[id] routes)
+- Data table with search and filter functionality
+- Bulk delete feature for albums
+- CSV/XLSX import feature for albums with validation
 
-To learn more about Next.js, take a look at the following resources:
+## 📋 Prerequisites
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Node.js (v14 or later)
+- npm or yarn
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🚀 Getting Started
 
-## Deploy on Vercel
+1. Clone the repository:
+   ```
+   git clone https://github.com/hazmid/fastyr-frontend-test.git
+   cd fastyr-frontend-test
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. Install dependencies:
+   ```
+   npm install
+   # or
+   yarn install
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. Run the development server:
+   ```
+   npm run dev
+   # or
+   yarn dev
+   ```
+
+4. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
+
+## 📁 Project Structure
+
+- `/app`: Next.js app router pages and layouts
+- `/components`: Reusable React components
+- `/lib`: Utility functions and Apollo Client setup
+- `/styles`: Global styles and Tailwind CSS configuration
+- `/public`: Static assets
+
+## 🔗 API Integration
+
+This project uses Apollo Client to interact with the GraphQL API at [https://graphqlzero.almansi.me/api](https://graphqlzero.almansi.me/api).
+
+## 🎨 UI Components
+
+UI components are primarily sourced from shadcn/ui, with custom styling applied using Tailwind CSS.
+
+## 📊 Data Table
+
+The albums page (/albums) features a data table implemented using TanStack Table, providing search and filter capabilities.
+
+## 📤 Deployment
+
+This project is deployed on Vercel. Vercel was chosen for its seamless integration with Next.js projects, automatic deployments from Git, and excellent performance.
+
+To deploy your own instance:
+
+1. Push your code to a GitHub repository.
+2. Sign up for a [Vercel account](https://vercel.com/signup).
+3. Import your GitHub project to Vercel.
+4. Follow the deployment steps provided by Vercel.
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome! Feel free to check [issues page](https://github.com/hazmid/fastyr-frontend-test/issues).
+
+## 📝 License
+
+This project is [MIT](https://choosealicense.com/licenses/mit/) licensed.
+
+## 👤 Author
+
+Your Name
+- GitHub: [@hazmid](https://github.com/hazmid)
+- Upwork: [Abdulhamid Usman](https://www.upwork.com/freelancers/~01f593d4b3e664a83e)
+
+---
+
+⭐️ If you like this project, please give it a star on GitHub!
