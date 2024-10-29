@@ -18,6 +18,7 @@ import { ADD_USER, GET_USERS } from "@/lib/gqlOperations";
 const Users = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [newUser, setNewUser] = useState<User>({ name: "", username: "", email: "", phone: "" })
+    
     const { toast } = useToast()
 
     const { data, loading, error, refetch } = useQuery(GET_USERS);

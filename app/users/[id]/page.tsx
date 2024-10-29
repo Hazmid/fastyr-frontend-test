@@ -20,6 +20,7 @@ const UserDetails = ({ params }: { params: Promise<{ id: string }> }) => {
     const { id } = use(params);
     const router = useRouter();
     const { toast } = useToast();
+
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [editedUser, setEditedUser] = useState<User>({
         name: "",
@@ -80,7 +81,7 @@ const UserDetails = ({ params }: { params: Promise<{ id: string }> }) => {
         setEditedUser({ ...editedUser, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleUserUpdate = (e: React.FormEvent) => {
         e.preventDefault();
         updateUser({ variables: { id, input: editedUser } });
     };
@@ -125,7 +126,7 @@ const UserDetails = ({ params }: { params: Promise<{ id: string }> }) => {
                                 <DialogHeader>
                                     <DialogTitle>Edit User</DialogTitle>
                                 </DialogHeader>
-                                <form onSubmit={handleSubmit} className="space-y-4">
+                                <form onSubmit={handleUserUpdate} className="space-y-4">
                                     <div>
                                         <Label htmlFor="name">Name</Label>
                                         <Input

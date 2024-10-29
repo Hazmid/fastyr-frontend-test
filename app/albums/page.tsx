@@ -21,6 +21,7 @@ import { ADD_ALBUM, DELETE_ALBUMS, GET_ALBUMS } from '@/lib/gqlOperations';
 export default function AlbumsPage() {
   const router = useRouter();
   const { toast } = useToast();
+
   const [isOpen, setIsOpen] = useState(false);
   const [isImportOpen, setIsImportOpen] = useState(false);
   const [newAlbum, setNewAlbum] = useState<Album>({ title: "", userId: "" });
@@ -85,7 +86,7 @@ export default function AlbumsPage() {
       });
       return;
     }
-
+    //loop through and delete each seleted album 
     try {
       for (const id of selectedAlbums) {
         await deleteAlbums({ variables: { id } });
@@ -130,6 +131,7 @@ export default function AlbumsPage() {
   };
 
   const handleImport = async () => {
+    //loop through each imported album to add them
     try {
       for (const album of importedAlbums) {
         await addAlbum({ variables: { input: album } });
@@ -209,8 +211,7 @@ export default function AlbumsPage() {
     <div className='p-4'>
       <div className="flex justify-between mb-4">
         <div>
-
-          {/* create new album dialog */}
+          {/*dialog for creating new album*/}
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
               <Button>Add new album</Button>
@@ -272,7 +273,7 @@ export default function AlbumsPage() {
         onRowSelectionChange={setSelectedAlbums}
       />
 
-      {/* album upload dialog  */}
+      {/*dialog for uploading album from a file*/}
       <Dialog open={isImportOpen} onOpenChange={setIsImportOpen}>
         <DialogContent className="max-w-4xl">
           <DialogHeader>

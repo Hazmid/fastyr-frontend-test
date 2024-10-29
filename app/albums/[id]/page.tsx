@@ -14,23 +14,23 @@ import { useToast } from "@/hooks/use-toast"
 import { Loader } from "lucide-react"
 
 import { useQuery, useMutation } from "@apollo/client";
-import { Photo } from "@/lib/types";
+import { Album, Photo } from "@/lib/types";
 import { DELETE_ALBUM, GET_ALBUM_BY_ID, UPDATE_ALBUM } from "@/lib/gqlOperations";
 
 const AlbumDetails = ({ params }: { params: Promise<{ id: string }> }) => {
     const { id } = use(params);
     const router = useRouter();
     const { toast } = useToast();
+
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [editedAlbum, setEditedAlbum] = useState({
         title: ""
     });
+    const [imgError, setImgError] = useState<{ [key: string]: boolean }>({});
 
     const { data, loading, error, refetch } = useQuery(GET_ALBUM_BY_ID, {
         variables: { id },
     });
-
-    const [imgError, setImgError] = useState<{ [key: string]: boolean }>({});
 
     const [updateAlbum] = useMutation(UPDATE_ALBUM, {
         onCompleted: () => {
@@ -76,13 +76,13 @@ const AlbumDetails = ({ params }: { params: Promise<{ id: string }> }) => {
     }
     if (error) return <p>Error: {error.message}</p>;
 
-    const { album } = data;
+    const { album } = data  as { album: Album };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEditedAlbum({ ...editedAlbum, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleAlbumUpdate = (e: React.FormEvent) => {
         e.preventDefault();
         updateAlbum({ variables: { id, input: editedAlbum } });
     };
@@ -110,7 +110,7 @@ const AlbumDetails = ({ params }: { params: Promise<{ id: string }> }) => {
                 </CardHeader>
                 <CardContent>
                     <h1 className="text-2xl font-bold mb-2">{album.title}</h1>
-                    <p className="mb-4">Album Owner: {album.user.name}</p>
+                    <p className="mb-4">Album Owner: {album.user?.name}</p>
                     <div className="flex space-x-2 mb-6">
                         <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
                             <DialogTrigger asChild>
@@ -124,7 +124,7 @@ const AlbumDetails = ({ params }: { params: Promise<{ id: string }> }) => {
                                 <DialogHeader>
                                     <DialogTitle>Edit Album</DialogTitle>
                                 </DialogHeader>
-                                <form onSubmit={handleSubmit} className="space-y-4">
+                                <form onSubmit={handleAlbumUpdate} className="space-y-4">
                                     <div>
                                         <Label htmlFor="title">Title</Label>
                                         <Input
@@ -143,7 +143,7 @@ const AlbumDetails = ({ params }: { params: Promise<{ id: string }> }) => {
                     </div>
                     <h2 className="text-xl font-semibold mb-4">Photos</h2>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                        {album.photos.data.map((photo: Photo) => (
+                        {album.photos?.data.map((photo: Photo) => (
                             <div key={photo.id} className="relative group">
                                 <Image
                                     src={imgError[photo.id] ? '/placeholder.png' : photo.thumbnailUrl}
