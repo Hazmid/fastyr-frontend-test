@@ -1,8 +1,7 @@
-export default function Home() {
+import { redirect } from "next/navigation";
 
-  return (
-    <>
-      <h1>Content</h1>
-    </>
-  );
+export default function Home() {
+  // set /users route as default
+  redirect("/users");
+  return null;
 }
