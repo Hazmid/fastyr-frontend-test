@@ -4,7 +4,7 @@ This project is a frontend application built with Next.js, demonstrating integra
 
 ## 🚀 Live Demo
 
-[View the live demo]()
+[View the live demo](https://fastyr-frontend-test.vercel.app/)
 
 ## 🛠 Tech Stack
 
