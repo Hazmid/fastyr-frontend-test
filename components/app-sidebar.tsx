@@ -6,6 +6,7 @@ import {
     SidebarGroup,
     SidebarGroupContent,
     SidebarGroupLabel,
+    SidebarHeader,
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
@@ -28,9 +29,12 @@ const items = [
 export function AppSidebar() {
     return (
         <Sidebar>
+            <SidebarHeader>
+                Fastyr Frontend Test
+            </SidebarHeader>
             <SidebarContent>
                 <SidebarGroup>
-                    <SidebarGroupLabel>Fastyr Frontend Test</SidebarGroupLabel>
+                    <SidebarGroupLabel>Routes</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
                             {items.map((item) => (
