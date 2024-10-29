@@ -256,7 +256,7 @@ export default function AlbumsPage() {
                 type="file"
                 accept=".csv,.xlsx"
                 onChange={handleFileUpload}
-                className="max-w-xs border-2 border-gray-700"
+                className="max-w-xs border-2 border-gray-700 cursor-pointer"
               />
             </div>
           </div>
